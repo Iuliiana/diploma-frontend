@@ -1,0 +1,7 @@
+.buttonDefault {
+    padding: 5px 20px;
+    outline: none;
+    border: 2px solid #282c34;
+    background: rgba(13, 110, 253, 0.43);
+    font-size: 14px;
+}
