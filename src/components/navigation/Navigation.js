@@ -1,5 +1,5 @@
 import React from 'react';
-import {routesNav} from "../../routes/routes";
+import {routesNav} from "../../routes";
 import NavigationItem from "./NavigationItem";
 
 const Navigation = (props) => {

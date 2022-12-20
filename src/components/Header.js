@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, NavLink} from "react-router-dom";
-import {routesNav} from "../routes/routes";
+import {routesNav} from "../routes";
 import Navigation from "./navigation/Navigation";
 
 const Header = () => {
