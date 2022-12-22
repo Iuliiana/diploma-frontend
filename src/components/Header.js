@@ -1,11 +1,9 @@
 import React from 'react';
-import {Link, NavLink} from "react-router-dom";
-import {routesNav} from "../routes";
+import {Link} from "react-router-dom";
 import Navigation from "./navigation/Navigation";
+import Search from "./Search";
 
 const Header = () => {
-
-
     return (
         <header className="container">
             <div className="row">
@@ -25,10 +23,7 @@ const Header = () => {
                                         <div className="header-controls-cart-menu"/>
                                     </div>
                                 </div>
-                                <form data-id="search-form"
-                                      className="header-controls-search-form form-inline invisible">
-                                    <input className="form-control" placeholder="Поиск"/>
-                                </form>
+                                <Search className="header-controls-search-form form-inline"/>
                             </div>
                         </div>
                     </nav>
