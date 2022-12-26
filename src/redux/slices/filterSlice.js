@@ -43,7 +43,7 @@ const filter = createSlice({
             .addMatcher(
                 rootApi.endpoints.getCatalogList.matchFulfilled,
                 (state, {payload}) => {
-                    console.log('после успешной загрузки')
+                    // console.log('после успешной загрузки')
                 }
             )
 
