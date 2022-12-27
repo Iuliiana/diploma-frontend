@@ -4,7 +4,7 @@ const OrderApi = rootApi.injectEndpoints({
     endpoints: (builder) => ({
         setOrder: builder.query({
             query: () => '/api/order',
-            providesTags: ['TopSales'],
+            providesTags: ['Order'],
         }),
     }),
 });

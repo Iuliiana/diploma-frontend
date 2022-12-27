@@ -234,6 +234,16 @@ section {
     text-overflow: ellipsis;
 }
 
+.card-img-top {
+    height: 320px;
+}
+
+.catalog .btn-outline-primary {
+    margin: 0 auto;
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
 
 /* Footer */
 .footer {

@@ -20,8 +20,10 @@ const ProductCard = (props) => {
                             {props.images.map((item) => {
                                 return (
                                     <SwiperSlide key={uuid()}>
-                                        <img src={item} className="card-img-top"
-                                             alt={props.title}/>
+                                        <div className="card-img-top">
+                                            <img src={item} className="card-img-top"
+                                                 alt={props.title}/>
+                                        </div>
                                     </SwiperSlide>
                                 );
                             })}

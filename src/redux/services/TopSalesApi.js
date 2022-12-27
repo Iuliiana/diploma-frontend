@@ -5,20 +5,13 @@ const TopSalesApi = rootApi.injectEndpoints({
         getTopSalesList: builder.query({
             query: () => '/api/top-sales',
             providesTags: ['TopSales'],
+            // transformResponse: (returnValue, meta) => {
+            //     if (!meta) return [];
+            // },
         }),
-
-        // builder.addCase(
-        //     updateUser.rejected,
-        //     (state, action) => {
-        //         if (action.payload) {
-        //             // Здесь мы имеем доступ к ошибкам, переданным в `createAsyncThunk()`
-        //             state.error = action.payload.errorMessage;
-        //         } else {
-        //             state.error = action.error.message;
-        //         }
-        //     }
-        // );
     }),
+
+
 });
 
 export const {

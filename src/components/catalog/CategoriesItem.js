@@ -1,25 +1,21 @@
 import React from 'react';
 import propTypes from "prop-types";
-import {useDispatch, useSelector} from "react-redux";
-import {setFilter} from "../../redux/slices/filterSlice";
+import {Button} from "../../ui/button/Button";
 
 
 const CategoriesItem = (props) => {
-    const dispatch = useDispatch();
-
-    const handleClick = () => {
-        dispatch(setFilter({name: 'category', value: props.id}))
-    }
+    const {onClick: handleClick} = props;
 
     return (
         <li className="nav-item">
-            <a className="nav-link" href='#' onClick={handleClick}>{props.title}</a>
+            <Button className={`nav-link nav-button ${props.isCurrent ? 'active' : ''}`}
+                    onClick={() => handleClick(props.id)}>{props.title}</Button>
         </li>
     );
 };
 
 CategoriesItem.propTypes = {
-    id: propTypes.number.isRequired,
+    id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
     title: propTypes.string.isRequired,
 }
 

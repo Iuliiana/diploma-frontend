@@ -1,10 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {createApi, fetchBaseQuery, retry} from '@reduxjs/toolkit/query/react';
+
+
+const baseQueryConfig = retry(fetchBaseQuery({
+    baseUrl: process.env.REACT_APP_URL,
+}), {
+    maxRetries: 5,
+});
 
 export const rootApi = createApi({
     reducerPath: 'rootApi',
-     tagTypes: ['TopSales', 'Categories', 'Catalog'],
-    baseQuery: fetchBaseQuery({
-        baseUrl: process.env.REACT_APP_URL,
-    }),
+    tagTypes: ['TopSales', 'Categories', 'Catalog', 'Order'],
+    baseQuery: baseQueryConfig,
     endpoints: () => ({}),
 });

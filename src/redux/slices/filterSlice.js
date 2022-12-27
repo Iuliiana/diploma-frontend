@@ -1,5 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {rootApi} from "../rootApi";
 
 const initialState = {
     params: [
@@ -15,42 +14,27 @@ const initialState = {
             name: 'offset',
             value: 0
         },
-    ],
-    isEnd: false,
+    ]
 };
-const LIMIT = 6;
 
-const filter = createSlice({
+export const OFFSET_LIMIT = 6;
+
+const filterSlice = createSlice({
     name: 'filter',
     initialState: initialState,
     reducers: {
         setFilter(state, action) {
-            state.params.forEach(param => {
-                if (param.name === action.payload.name)
-                    param.value = action.payload.value
-            })
+            const removeFilterParams = ['offset', action.payload.name];
+            const addFilterParams = [{name: 'offset', value: 0}, action.payload];
+
+            state.params = [...state.params.filter(param => !removeFilterParams.includes(param.name)), ...addFilterParams];
         },
-        // loadMore(state, {payload}) {
-        //     if (payload !== []) {
-        //         state.collection.push(payload);
-        //         state.offset += LIMIT;
-        //     }
-        //     state.isEnd = payload.length < LIMIT
-        // }
+        setOffset(state) {
+            const indexOffset = state.params.findIndex(param => param.name === 'offset');
+            state.params[indexOffset].value += 6
+        }
     },
-    extraReducers: (builder) => {
-        builder
-            .addMatcher(
-                rootApi.endpoints.getCatalogList.matchFulfilled,
-                (state, {payload}) => {
-                    // console.log('после успешной загрузки')
-                }
-            )
-
-    }
-
 });
 
-export const {setFilter} = filter.actions;
-//export {setFilter} = catalog.actions;
-export default filter.reducer;
+export const {setFilter, setOffset} = filterSlice.actions;
+export default filterSlice.reducer;
