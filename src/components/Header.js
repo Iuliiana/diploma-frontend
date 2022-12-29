@@ -1,9 +1,24 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React, {useState} from 'react';
+import {Link, redirect, useNavigate} from "react-router-dom";
 import Navigation from "./navigation/Navigation";
 import Search from "./Search";
+import {useDispatch, useSelector} from "react-redux";
+import {setFilter} from "../redux/slices/filterSlice";
 
 const Header = () => {
+    const search = useSelector(state => state.search);
+    const [isShowSearch, setIsShowSearch] = useState(true);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const handleClickShowSearch = () => {
+        if (search.value !== '') {
+            dispatch(setFilter(search));
+            return navigate("/catalog.html");
+        }
+        setIsShowSearch(prevState => !prevState);
+    };
+
     return (
         <header className="container">
             <div className="row">
@@ -17,13 +32,17 @@ const Header = () => {
                             <div>
                                 <div className="header-controls-pics">
                                     <div data-id="search-expander"
-                                         className="header-controls-pic header-controls-search"/>
+                                         className="header-controls-pic header-controls-search"
+                                         onClick={handleClickShowSearch}/>
                                     <div className="header-controls-pic header-controls-cart">
-                                        {/*<div className="header-controls-cart-full">1</div>*/}
+
+                                        <div className="header-controls-cart-full">1</div>
+
                                         <div className="header-controls-cart-menu"/>
                                     </div>
                                 </div>
-                                <Search className="header-controls-search-form form-inline"/>
+                                <Search
+                                    className={`header-controls-search-form form-inline ${isShowSearch ? 'invisible' : ''} `}/>
                             </div>
                         </div>
                     </nav>

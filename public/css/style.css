@@ -89,6 +89,7 @@ section {
     box-shadow: 0px 0px 10px #D4E4E6;
     border-radius: 50px;
     text-align: right;
+    transition: .3s all;
 }
 
 .header-controls-search-form .form-control {

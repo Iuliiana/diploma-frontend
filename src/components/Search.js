@@ -10,14 +10,11 @@ const Search = (props) => {
     const search = useSelector(state => state.search);
 
     const changeSearch = (e) => {
-        dispatch(setSearchParams(e.target.value))
+        dispatch(setSearchParams(e.target.value));
     }
 
     const submitSearch = () => {
-        dispatch(setFilter({
-            name: search.name,
-            value: search.value
-        }))
+        dispatch(setFilter(search));
     }
 
     return (
@@ -27,7 +24,7 @@ const Search = (props) => {
                        event.preventDefault();
                        submitSearch();
                    }}
-                   className={props.className}>
+                   {...props}>
                 <Input className="form-control" placeholder="Поиск"
                        name="search"
                        value={search.value}

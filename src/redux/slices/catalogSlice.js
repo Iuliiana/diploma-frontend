@@ -16,11 +16,13 @@ const catalogSlice = createSlice({
             .addMatcher(
                 rootApi.endpoints.getCatalogList.matchFulfilled,
                 (state, action) => {
-                    if (action.payload.length !== OFFSET_LIMIT) {
-                        state.isEnd = true;
-                    }
+                    state.isEnd = action.payload.length !== OFFSET_LIMIT;
                     const isOffset = action.meta.arg.originalArgs?.find(param => param.name === 'offset').value > 0;
-                    (isOffset) ? state.collection = [...state.collection, ...action.payload] : state.collection = action.payload;
+                    if (isOffset) {
+                        state.collection = [...state.collection, ...action.payload];
+                    } else {
+                        state.collection = action.payload;
+                    }
                 }
             )
     }

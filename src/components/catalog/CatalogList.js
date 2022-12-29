@@ -4,30 +4,30 @@ import {useGetCategoriesListQuery} from "../../redux/services/CategoriesApi";
 import CategoriesList from "./CategoriesList";
 import Loader from "../../ui/loaders/Loader";
 import {useDispatch, useSelector} from "react-redux";
-import {useGetCatalogListQuery} from "../../redux/services/CatalogApi";
 import {setOffset} from "../../redux/slices/filterSlice";
 import {Button} from "../../ui/button/Button";
+import {useGetCatalogListQuery} from "../../redux/services/CatalogApi";
 
 const CatalogList = ({children}) => {
     const dispatch = useDispatch();
     const filter = useSelector(state => state.filter);
 
+    const {
+        data: catalogList,
+        isLoading: catalogLoading,
+        isFetching: catalogFetching
+    } = useGetCatalogListQuery(filter.params);
 
     const {
-        error: catalogError,
-        isLoading: catalogLoading,
-        isFetching
-    } = useGetCatalogListQuery(filter.params);
-    // eslint-disable-next-line
-    const {categoriesLoading, categoriesError} = useGetCategoriesListQuery();
-    const {collection: categories} = useSelector(state => state.categories);
-    const {collection: catalogList, isEnd} = useSelector(state => state.catalog);
+        isLoading: categoriesLoading
+    } = useGetCategoriesListQuery(null, {skip: catalogLoading});
 
-    if (catalogLoading) return <Loader/>;
-    if (!catalogLoading && catalogError && !catalogList.length) return <div>Ошибка</div>;
+
+    const {collection: categories} = useSelector(state => state.categories);
+    const {collection, isEnd} = useSelector(state => state.catalog);
 
     const handleClickLoadMore = () => {
-        if (isEnd || isFetching)
+        if (isEnd || catalogFetching)
             return;
         dispatch(setOffset());
     }
@@ -35,25 +35,28 @@ const CatalogList = ({children}) => {
     return (
         <section className="catalog">
             <h2 className="text-center">Каталог</h2>
+
             {children}
 
-            {<CategoriesList list={categories}/>}
+            {catalogLoading && <Loader/>}
 
-            <div className="row">
-                {catalogList.map(item => <ProductCard key={item.id} {...item} />)}
-            </div>
+            {!catalogLoading && !categoriesLoading && <CategoriesList list={categories}/>}
 
-            {isFetching && <Loader/>}
+            {!catalogLoading && !catalogFetching && catalogList.length !== 0 && (
+                <div className="row">
+                    {catalogList.map(item => <ProductCard key={item.id} {...item} />)}
+                </div>
+            )}
 
-            {
-                !isEnd && (
-                    <div className="text-center">
-                        <Button className="btn btn-outline-primary" disabled={isFetching}
-                                onClick={handleClickLoadMore}>Загрузить ещё
-                        </Button>
-                    </div>
-                )
-            }
+            {!catalogLoading && catalogFetching && <Loader/>}
+
+            {!isEnd && !catalogFetching && (
+                <div className="text-center">
+                    <Button className="btn btn-outline-primary" disabled={catalogFetching}
+                            onClick={handleClickLoadMore}>Загрузить ещё
+                    </Button>
+                </div>
+            )}
 
         </section>
     );

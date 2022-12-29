@@ -31,7 +31,10 @@ const filterSlice = createSlice({
         },
         setOffset(state) {
             const indexOffset = state.params.findIndex(param => param.name === 'offset');
-            state.params[indexOffset].value += 6
+            state.params[indexOffset].value += 6;
+        },
+        clearFilter(state) {
+            state.params = initialState;
         }
     },
 });
