@@ -1,8 +1,9 @@
 import {createApi, fetchBaseQuery, retry} from '@reduxjs/toolkit/query/react';
 
+const baseUrl = process.env.REACT_APP_URL || 'http://localhost:7070/';
 
 const baseQueryConfig = retry(fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_URL,
+    baseUrl,
 }), {
     maxRetries: 5,
 });

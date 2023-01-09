@@ -9,7 +9,7 @@ const CategoriesItem = (props) => {
     return (
         <li className="nav-item">
             <Button className={`nav-link nav-button ${props.isCurrent ? 'active' : ''}`}
-                    onClick={() => handleClick(props.id)}>{props.title}</Button>
+                    onClick={() => handleClick(props.id)} disabled={props.isCurrent}>{props.title}</Button>
         </li>
     );
 };

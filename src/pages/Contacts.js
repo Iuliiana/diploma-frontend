@@ -1,5 +1,5 @@
 import React from 'react';
-import {mainOfficeContacts} from "../helper/constants";
+import {mainOfficeContacts} from "../helper/contacts";
 import {clearPhone} from "../helper";
 
 const Contacts = () => {

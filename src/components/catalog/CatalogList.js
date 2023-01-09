@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import ProductCard from "../ProductCard";
 import {useGetCategoriesListQuery} from "../../redux/services/CategoriesApi";
 import CategoriesList from "./CategoriesList";
@@ -6,31 +6,34 @@ import Loader from "../../ui/loaders/Loader";
 import {useDispatch, useSelector} from "react-redux";
 import {setOffset} from "../../redux/slices/filterSlice";
 import {Button} from "../../ui/button/Button";
-import {useGetCatalogListQuery} from "../../redux/services/CatalogApi";
+import {useGetCatalogListQuery, useLazyGetCatalogListQuery} from "../../redux/services/CatalogApi";
 
 const CatalogList = ({children}) => {
     const dispatch = useDispatch();
+
+    const {isLoading: catalogLoading} = useGetCatalogListQuery();
+    const {isLoading: categoriesLoading} = useGetCategoriesListQuery(null, {skip: catalogLoading});
+    const [getCatalogListByParams, {isFetching: catalogListIsFetching}] = useLazyGetCatalogListQuery();
+
     const filter = useSelector(state => state.filter);
-
-    const {
-        data: catalogList,
-        isLoading: catalogLoading,
-        isFetching: catalogFetching
-    } = useGetCatalogListQuery(filter.params);
-
-    const {
-        isLoading: categoriesLoading
-    } = useGetCategoriesListQuery(null, {skip: catalogLoading});
-
-
     const {collection: categories} = useSelector(state => state.categories);
-    const {collection, isEnd} = useSelector(state => state.catalog);
+    const {collection: catalogList, isEnd} = useSelector(state => state.catalog);
+
+
+    useLayoutEffect(() => {
+        const promise = getCatalogListByParams(filter.params);
+        return () => promise.abort();
+    }, [filter.params]);
 
     const handleClickLoadMore = () => {
-        if (isEnd || catalogFetching)
+        if (isEnd || catalogListIsFetching)
             return;
         dispatch(setOffset());
     }
+
+    const isShowCatalog = (!catalogLoading && !catalogListIsFetching && catalogList.length !== 0)
+        || (catalogListIsFetching && filter.isOffset);
+
 
     return (
         <section className="catalog">
@@ -42,17 +45,17 @@ const CatalogList = ({children}) => {
 
             {!catalogLoading && !categoriesLoading && <CategoriesList list={categories}/>}
 
-            {!catalogLoading && !catalogFetching && catalogList.length !== 0 && (
+            {isShowCatalog && (
                 <div className="row">
                     {catalogList.map(item => <ProductCard key={item.id} {...item} />)}
                 </div>
             )}
 
-            {!catalogLoading && catalogFetching && <Loader/>}
+            {!catalogLoading && catalogListIsFetching && <Loader/>}
 
-            {!isEnd && !catalogFetching && (
+            {!isEnd && !catalogListIsFetching && !catalogLoading && (
                 <div className="text-center">
-                    <Button className="btn btn-outline-primary" disabled={catalogFetching}
+                    <Button className="btn btn-outline-primary" disabled={catalogListIsFetching}
                             onClick={handleClickLoadMore}>Загрузить ещё
                     </Button>
                 </div>

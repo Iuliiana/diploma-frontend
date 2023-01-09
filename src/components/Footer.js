@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from "./navigation/Navigation";
 import {clearPhone} from "../helper";
-import {mainOfficeContacts} from "../helper/constants";
+import {mainOfficeContacts} from "../helper/contacts";
 
 const Footer = () => {
     return (

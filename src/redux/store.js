@@ -4,6 +4,8 @@ import search from "./slices/searchSlice";
 import filter from "./slices/filterSlice";
 import categories from "./slices/categoriesSlice";
 import catalog from "./slices/catalogSlice";
+import basket from "./slices/basketSlice";
+import product from "./slices/productSlice";
 
 
 const rootReducer = combineReducers({
@@ -11,7 +13,9 @@ const rootReducer = combineReducers({
     search,
     filter,
     categories,
-    catalog
+    catalog,
+    basket,
+    product,
 });
 
 

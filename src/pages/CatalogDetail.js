@@ -1,22 +1,20 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useParams} from "react-router-dom";
 import {useGetCatalogItemByIdQuery} from "../redux/services/CatalogApi";
 import Loader from "../ui/loaders/Loader";
 import uuid from "react-uuid";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    decrementProductCount,
+    incrementProductCount,
+    productToBasket,
+    setProductSize
+} from "../redux/slices/productSlice";
+import {getTotalCount} from "../redux/slices/basketSlice";
 
 const CatalogDetail = () => {
     const {id} = useParams();
-    const [minCount, maxCount] = [1, 10];
-
-    const getProductCount = (id) => {
-        const productData = localStorage.getItem(id);
-        if (!productData) return 1;
-
-        const parseData = JSON.parse(productData);
-        return parseData?.count || 1;
-    }
-
-    const [productCount, setProductCount] = useState(getProductCount(id));
+    const dispatch = useDispatch();
 
     const {
         data: productDetail,
@@ -24,29 +22,28 @@ const CatalogDetail = () => {
         isError: productDetailError,
     } = useGetCatalogItemByIdQuery(id);
 
-
-    if (productDetailLoading) return <Loader/>
-    if (!productDetailLoading && productDetailError) return;
+    const product = useSelector(state => state.product);
+    const [minCount, maxCount] = [1, 10];
 
     const incrementCount = () => {
-        if (productCount === maxCount) return;
-        setProductCount(prevState => prevState + 1);
+        if (product.count === maxCount) return;
+        dispatch(incrementProductCount());
     }
 
     const decrementCount = () => {
-        if (productCount === minCount) return;
-        setProductCount(prevState => prevState - 1);
+        if (product.count === minCount) return;
+        dispatch(decrementProductCount());
     }
 
-    const addToBasket = () => {
-        localStorage.setItem(id, JSON.stringify({
-            id: id,
-            price: productDetail.price,
-            count: productCount
-        }));
+    const handleChangeSizeClick = (size) => {
+        dispatch(setProductSize(size));
     }
 
 
+    const sizes = productDetail?.sizes?.filter(size => size.avalible === true) || [];
+
+    if (productDetailLoading) return <Loader/>;
+    if (!productDetailLoading && productDetailError) return;
     return (
         <section className="catalog-item">
             <h2 className="text-center">{productDetail.title}</h2>
@@ -84,26 +81,41 @@ const CatalogDetail = () => {
                         </tr>
                         </tbody>
                     </table>
-                    <div className="text-center">
-
-                        <p>Размеры в наличии:
-                            {/*selected*/}
-                            {
-                                productDetail.sizes.filter(size => size.avalible === true).map(size => {
-                                    return <span key={uuid()} className="catalog-item-size">{size.size}</span>;
-                                })
-                            }
-                        </p>
-                        <p>Количество:
-                            <span className="btn-group btn-group-sm pl-2">
-                                <button className="btn btn-secondary" onClick={decrementCount}
-                                        disabled={(productCount === 1)}>-</button>
-                                <span className="btn btn-outline-primary">{productCount}</span>
-                                <button className="btn btn-secondary" onClick={incrementCount}>+</button>
-                            </span>
-                        </p>
-                    </div>
-                    <button className="btn btn-danger btn-block btn-lg" onClick={addToBasket}>В корзину</button>
+                    {!!sizes.length && (
+                        <>
+                            <div className="text-center">
+                                <p>Размеры в наличии:
+                                    {
+                                        sizes.map(size => {
+                                            return (
+                                                <span
+                                                    className={`catalog-item-size ${product.size === size.size ? 'selected' : ''}`}
+                                                    key={uuid()} onClick={() => handleChangeSizeClick(size.size)}>
+                                            {size.size}
+                                        </span>);
+                                        })
+                                    }
+                                </p>
+                                <p>Количество:
+                                    <span className="btn-group btn-group-sm pl-2">
+                                    <button className="btn btn-secondary" onClick={decrementCount}
+                                            disabled={(product.count === minCount)}>-</button>
+                                    <span className="btn btn-outline-primary">{product.count}</span>
+                                    <button className="btn btn-secondary" onClick={incrementCount}
+                                            disabled={(product.count === maxCount)}>+</button>
+                                </span>
+                                </p>
+                            </div>
+                            <button
+                                disabled={product.size === ''}
+                                className="btn btn-danger btn-block btn-lg"
+                                onClick={() => {
+                                    dispatch(productToBasket());
+                                    dispatch(getTotalCount());
+                                }}>В корзину
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </section>
