@@ -1,5 +1,5 @@
 import React from 'react';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useGetCatalogItemByIdQuery} from "../redux/services/CatalogApi";
 import Loader from "../ui/loaders/Loader";
 import uuid from "react-uuid";
@@ -7,14 +7,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     decrementProductCount,
     incrementProductCount,
-    productToBasket,
     setProductSize
 } from "../redux/slices/productSlice";
-import {getTotalCount} from "../redux/slices/basketSlice";
+import {addProduct} from "../redux/slices/basketSlice";
 
 const CatalogDetail = () => {
     const {id} = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         data: productDetail,
@@ -37,6 +37,11 @@ const CatalogDetail = () => {
 
     const handleChangeSizeClick = (size) => {
         dispatch(setProductSize(size));
+    }
+
+    const handleAddToBasketClick = () => {
+        dispatch(addProduct(product));
+        navigate('/cart.html')
     }
 
 
@@ -109,10 +114,8 @@ const CatalogDetail = () => {
                             <button
                                 disabled={product.size === ''}
                                 className="btn btn-danger btn-block btn-lg"
-                                onClick={() => {
-                                    dispatch(productToBasket());
-                                    dispatch(getTotalCount());
-                                }}>В корзину
+                                onClick={handleAddToBasketClick}>
+                                В корзину
                             </button>
                         </>
                     )}

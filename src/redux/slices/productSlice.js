@@ -6,6 +6,7 @@ const initialState = {
     id: '',
     count: 1,
     price: '',
+    title: '',
     size: ''
 };
 
@@ -22,18 +23,6 @@ export const productSlice = createSlice({
     name: 'product',
     initialState: initialState,
     reducers: {
-        productToBasket(state) {
-            const productsDataString = localStorage.getItem(KEY_BASKET_NAME_LOCAL_STORAGE);
-
-            if (!productsDataString) {
-                localStorage.setItem(KEY_BASKET_NAME_LOCAL_STORAGE, JSON.stringify([state]));
-            } else {
-                const productsData = JSON.parse(productsDataString);
-
-                const products = [...productsData.filter(item => !(item.id === state.id && item.size === state.size)), state];
-                localStorage.setItem(KEY_BASKET_NAME_LOCAL_STORAGE, JSON.stringify(products));
-            }
-        },
         setProductSize(state, action) {
             state.size = action.payload;
             state.count = getProductCount(state.id, action.payload);
@@ -44,6 +33,9 @@ export const productSlice = createSlice({
         decrementProductCount(state) {
             state.count = state.count - 1;
         },
+        clearCurrentProduct() {
+            return initialState;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -51,11 +43,14 @@ export const productSlice = createSlice({
                 rootApi.endpoints.getCatalogItemById.matchFulfilled,
                 (state, {payload}) => {
                     state.id = String(payload.id);
+                    state.title = payload.title;
                     state.price = payload.price;
+                    state.size = '';
+                    state.count = 1;
                 }
             )
     }
 });
 
-export const {productToBasket, decrementProductCount, incrementProductCount, setProductSize} = productSlice.actions;
+export const {clearCurrentProduct, decrementProductCount, incrementProductCount, setProductSize} = productSlice.actions;
 export default productSlice.reducer
