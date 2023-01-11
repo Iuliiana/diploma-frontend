@@ -37,10 +37,10 @@ const filterSlice = createSlice({
             state.isOffset = true;
         },
         clearFilter(state) {
-            state.params = initialState;
+            state = initialState;
         }
     },
 });
 
-export const {setFilter, setOffset} = filterSlice.actions;
+export const {setFilter, setOffset, clearFilter} = filterSlice.actions;
 export default filterSlice.reducer;

@@ -4,6 +4,8 @@ import {Input} from "../../ui/input/Input";
 import {useSetOrderMutation} from "../../redux/services/OrderApi";
 import {useNavigate} from "react-router-dom";
 import Loader from "../../ui/loaders/Loader";
+import Alerts from "../Alerts";
+import {ERROR_SEND_ORDER} from "../../helper/messages";
 
 const OrderForm = () => {
     const navigate = useNavigate();
@@ -66,37 +68,38 @@ const OrderForm = () => {
     const isDisabledSendOrder = isEmptyObjProp(form) || isLoading || isSuccess;
 
     return (
-        <div className="card" style={{maxWidth: "30rem", margin: " 0 auto"}}>
-            {isError && !isLoading && (
-                <h4 className="text-danger">При оформлении заказа возникла ошибка! Попробуйте оформить ещё раз!</h4>
-            )}
-            <form className="card-body" onSubmit={(e) => handleSubmitForm(e)}>
-                <div className="form-group">
-                    <label htmlFor="phone">Телефон</label>
-                    <Input className="form-control"
-                           onFocus={(e) => onFocus(e)}
-                           onChange={(e) => handleInputChange(e)} name="phone" id="phone"
-                           placeholder="Ваш телефон" required/>
-                    {isShowErrMessage.phone && <p className="text-danger">Введите корректный номер телефона</p>}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="address">Адрес доставки</label>
-                    <Input className="form-control"
-                           onFocus={(e) => onFocus(e)}
-                           onChange={(e) => handleInputChange(e)} name="address" id="address"
-                           placeholder="Адрес доставки" required/>
-                </div>
-                <div className="form-group form-check">
-                    <Input type="checkbox" onChange={(e) => handleInputChange(e)} name="agreement"
-                           className="form-check-input" id="agreement" required/>
-                    <label className="form-check-label" htmlFor="agreement">Согласен с правилами
-                        доставки</label>
-                </div>
-                <button type="submit" className="btn btn-outline-secondary" disabled={isDisabledSendOrder}>Оформить
-                </button>
-                {isLoading && <Loader/>}
-            </form>
-        </div>
+        <>
+            {isError && !isLoading && <Alerts message={ERROR_SEND_ORDER} type="danger"/>}
+            <div className="card" style={{maxWidth: "30rem", margin: " 0 auto"}}>
+                <form className="card-body" onSubmit={(e) => handleSubmitForm(e)}>
+                    <div className="form-group">
+                        <label htmlFor="phone">Телефон</label>
+                        <Input className="form-control"
+                               onFocus={(e) => onFocus(e)}
+                               onChange={(e) => handleInputChange(e)} name="phone" id="phone"
+                               placeholder="Ваш телефон" required/>
+                        {isShowErrMessage.phone && <p className="text-danger">Введите корректный номер телефона</p>}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="address">Адрес доставки</label>
+                        <Input className="form-control"
+                               onFocus={(e) => onFocus(e)}
+                               onChange={(e) => handleInputChange(e)} name="address" id="address"
+                               placeholder="Адрес доставки" required/>
+                    </div>
+                    <div className="form-group form-check">
+                        <Input type="checkbox" onChange={(e) => handleInputChange(e)} name="agreement"
+                               className="form-check-input" id="agreement" required/>
+                        <label className="form-check-label" htmlFor="agreement">Согласен с правилами
+                            доставки</label>
+                    </div>
+                    <button type="submit" className="btn btn-outline-secondary" disabled={isDisabledSendOrder}>Оформить
+                    </button>
+                    {isLoading && <Loader/>}
+                </form>
+            </div>
+        </>
+
     );
 };
 

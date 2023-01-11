@@ -22,6 +22,9 @@ section {
     margin-bottom: 2em;
 }
 
+section {
+    min-height: 200px;
+}
 
 /* Common Styles */
 .invisible {
@@ -189,6 +192,10 @@ section {
     margin-bottom: 2em;
 }
 
+section.catalog-item {
+    min-height: 300px;
+}
+
 .catalog-item-card {
     margin-bottom: 1em;
 }
@@ -246,7 +253,7 @@ section {
 }
 
 .catalog-item-size {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 

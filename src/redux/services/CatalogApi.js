@@ -1,5 +1,6 @@
 import {rootApi} from "../rootApi";
 import {OFFSET_LIMIT} from "../slices/filterSlice";
+import {clearCatalog} from "../slices/catalogSlice";
 
 const aliasesParamsByCatalog = {
     category: 'categoryId',
@@ -9,6 +10,15 @@ const aliasesParamsByCatalog = {
 const CatalogApi = rootApi.injectEndpoints({
             endpoints: (builder) => ({
                 getCatalogList: builder.query({
+                    async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                        try {
+                            await queryFulfilled;
+                        } catch (e) {
+                            if (arg?.find(param => param?.name === 'offset').value === 0 && e?.error?.name !== 'AbortError') {
+                                dispatch(clearCatalog());
+                            }
+                        }
+                    },
                     query: (params) => {
                         const queryParams = params
                             ?.filter((filterParam) => !!filterParam.value)
@@ -17,7 +27,7 @@ const CatalogApi = rootApi.injectEndpoints({
                                 newObj[filterParamName] = filterParam.value;
                                 return newObj;
                             }, {});
-                        return `/api/items${(queryParams !== {} && queryParams !== undefined) ? `?${new URLSearchParams(queryParams)}` : ''}`;
+                        return `/items${(queryParams !== {} && queryParams !== undefined) ? `?${new URLSearchParams(queryParams)}` : ''}`;
                     },
                     transformResponse: (response, meta, arg) => {
                         return {
@@ -28,7 +38,7 @@ const CatalogApi = rootApi.injectEndpoints({
                     }
                 }),
                 getCatalogItemById: builder.query({
-                    query: (itemId) => `/api/items/${itemId}`,
+                    query: (itemId) => `/items/${itemId}`,
                     providesTags: (result, error, id) => [{type: 'Catalog', id}],
                 }),
             }),

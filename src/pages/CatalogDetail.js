@@ -10,6 +10,9 @@ import {
     setProductSize
 } from "../redux/slices/productSlice";
 import {addProduct} from "../redux/slices/basketSlice";
+import Section from "../ui/Section";
+import Alerts from "../components/Alerts";
+import {ERROR_LOAD_DATA} from "../helper/messages";
 
 const CatalogDetail = () => {
     const {id} = useParams();
@@ -20,6 +23,7 @@ const CatalogDetail = () => {
         data: productDetail,
         isLoading: productDetailLoading,
         isError: productDetailError,
+        refetch
     } = useGetCatalogItemByIdQuery(id);
 
     const product = useSelector(state => state.product);
@@ -47,11 +51,10 @@ const CatalogDetail = () => {
 
     const sizes = productDetail?.sizes?.filter(size => size.avalible === true) || [];
 
-    if (productDetailLoading) return <Loader/>;
-    if (!productDetailLoading && productDetailError) return;
+    if (productDetailLoading) return <Section><Loader/></Section>;
+    if (!productDetailLoading && productDetailError) return <Alerts message={ERROR_LOAD_DATA} onClick={refetch}/>
     return (
-        <section className="catalog-item">
-            <h2 className="text-center">{productDetail.title}</h2>
+        <Section sectionTitle={productDetail.title} sectionClassName='catalog-item'>
             <div className="row">
                 <div className="col-5">
                     <img src={productDetail.images[0]} className="img-fluid"
@@ -121,7 +124,7 @@ const CatalogDetail = () => {
                     )}
                 </div>
             </div>
-        </section>
+        </Section>
     );
 };
 

@@ -9,7 +9,11 @@ const initialState = {
 const catalogSlice = createSlice({
     name: 'catalog',
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        clearCatalog(state) {
+            state.collection = [];
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addMatcher(
@@ -27,4 +31,5 @@ const catalogSlice = createSlice({
     }
 });
 
+export const {clearCatalog} = catalogSlice.actions;
 export default catalogSlice.reducer;

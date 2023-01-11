@@ -10,7 +10,7 @@ const OrderApi = rootApi.injectEndpoints({
                     await queryFulfilled;
                     dispatch(clearBasket());
                 } catch (e) {
-                    console.error('fetchSetOrder error', e);
+                    //  console.error('fetchSetOrder error', e);
                 }
             },
             query(order) {
@@ -32,7 +32,7 @@ const OrderApi = rootApi.injectEndpoints({
                 }));
 
                 return {
-                    url: '/api/order',
+                    url: '/order',
                     method: 'POST',
                     body,
                 };

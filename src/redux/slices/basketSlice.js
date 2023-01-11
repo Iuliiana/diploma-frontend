@@ -18,10 +18,18 @@ const basketSlice = createSlice({
                 localStorage.setItem(KEY_BASKET_NAME_LOCAL_STORAGE, JSON.stringify([product]));
             } else {
                 const productsData = JSON.parse(productsDataString);
+                const desiredProduct = productsData.find(item => item.id === product.id && item.size === product.size);
+                let resultProducts = [];
 
-                const products = [...productsData.filter(item => !(item.id === product.id && item.size === product.size)), product];
-                state.totalCount = products.reduce((acc, current) => acc + current.count, 0);
-                localStorage.setItem(KEY_BASKET_NAME_LOCAL_STORAGE, JSON.stringify(products));
+                if (!desiredProduct) {
+                    resultProducts = [...productsData, product];
+                } else {
+                    desiredProduct.count += product.count;
+                    resultProducts = [...productsData.filter(item => !(item.id === product.id && item.size === product.size)), desiredProduct]
+                }
+
+                state.totalCount = resultProducts.reduce((acc, current) => acc + current.count, 0);
+                localStorage.setItem(KEY_BASKET_NAME_LOCAL_STORAGE, JSON.stringify(resultProducts));
             }
         },
         deleteProduct(state, action) {

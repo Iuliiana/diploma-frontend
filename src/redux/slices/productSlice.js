@@ -1,5 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {KEY_BASKET_NAME_LOCAL_STORAGE} from "./basketSlice";
 import {rootApi} from "../rootApi";
 
 const initialState = {
@@ -10,14 +9,6 @@ const initialState = {
     size: ''
 };
 
-export const getProductCount = (id, size) => {
-    const productsDataString = localStorage.getItem(KEY_BASKET_NAME_LOCAL_STORAGE);
-    if (!productsDataString) return 1;
-
-    const productsData = JSON.parse(productsDataString);
-    const product = productsData.find(item => item.id === id && item.size === size);
-    return product?.count || 1;
-}
 
 export const productSlice = createSlice({
     name: 'product',
@@ -25,7 +16,7 @@ export const productSlice = createSlice({
     reducers: {
         setProductSize(state, action) {
             state.size = action.payload;
-            state.count = getProductCount(state.id, action.payload);
+            // state.count = getProductCount(state.id, action.payload);
         },
         incrementProductCount(state) {
             state.count = state.count + 1;
