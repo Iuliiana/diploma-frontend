@@ -19,7 +19,8 @@ const ProductTable = () => {
         setItems(products);
         setCountPosition(products.length);
         setTotalPrice(products.reduce((acc, current) => acc + (current.price * current.count), 0));
-    }, [countPosition]);
+        /* eslint-disable-next-line */
+        }, [countPosition]);
 
 
     const handleDeleteClick = (id, size) => {
@@ -41,7 +42,7 @@ const ProductTable = () => {
             </tr>
             </thead>
             <tbody>
-            {!!items.length && items.map(item => <ProductItem onClick={handleDeleteClick} key={uuid()} {...item}/>)}
+            {!!items.length && items.map((item, index) => <ProductItem onClick={handleDeleteClick} index={index} key={uuid()} {...item}/>)}
             <tr>
                 <td colSpan="5" className="text-right">Общая стоимость</td>
                 <td>{currencyFormatter.format(totalPrice)}</td>

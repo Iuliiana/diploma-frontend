@@ -40,8 +40,12 @@ const basketSlice = createSlice({
                 state.totalCount = productsData.reduce((acc, current) => acc + current.count, 0);
             }
         },
+        clearBasket(state) {
+            localStorage.removeItem(KEY_BASKET_NAME_LOCAL_STORAGE);
+            state.totalCount = 0;
+        }
     }
 });
 
-export const {getTotalCount, addProduct, deleteProduct} = basketSlice.actions;
+export const {getTotalCount, addProduct, deleteProduct, clearBasket} = basketSlice.actions;
 export default basketSlice.reducer;

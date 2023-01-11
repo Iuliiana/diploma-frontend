@@ -8,6 +8,7 @@ import {Layout} from "../components/layouts/Layout";
 import {Notfound} from "../pages/Notfound";
 import {isObject} from "../helper";
 import {BannerLayout} from "../components/layouts/BannerLayout";
+import {Success} from "../pages/Success";
 
 export const routes = [
     {
@@ -97,6 +98,16 @@ export const routes = [
                         path: '*',
                         sortBy: {},
                         element: <Notfound/>,
+                    },
+                    {
+                        id: 8,
+                        pid: 0,
+                        isActive: true,
+                        isNavMenu: false,
+                        title: 'Успешный заказ!',
+                        path: '/order/success.html',
+                        sortBy: {},
+                        element: <Success/>,
                     },
                 ]
             }

@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {isEmptyObjProp} from "../../helper";
 import {Input} from "../../ui/input/Input";
 import {useSetOrderMutation} from "../../redux/services/OrderApi";
+import {useNavigate} from "react-router-dom";
+import Loader from "../../ui/loaders/Loader";
 
 const OrderForm = () => {
+    const navigate = useNavigate();
+    const [
+        setOrder, {isLoading, isError, isSuccess},
+    ] = useSetOrderMutation();
+
     const [form, setForm] = useState({
         phone: '',
         address: '',
@@ -24,35 +31,14 @@ const OrderForm = () => {
             setIsShowErrMessage(prevState => ({...prevState, phone: true}));
             return;
         }
-        console.log(form)
+        setOrder(form)
     }
 
-    const [
-        setOrder,
-        { isLoading },
-    ] = useSetOrderMutation();
-    console.log(isLoading)
-    //
-    // setOrder({
-    //
-    // })
-
-    //
-    // {
-    //     "owner": {
-    //     "phone": "+7xxxxxxxxxxx",
-    //         "address": "Moscow City",
-    // },
-    //     "items": [
-    //     {
-    //         "id": 1,
-    //         "price": 34000,
-    //         "count": 1
-    //     }
-    // ]
-    // }
-
-
+    useEffect(() => {
+        if (isSuccess)
+            navigate('/order/success.html');
+        /* eslint-disable-next-line */
+    }, [isSuccess])
 
     const phoneValidate = (phone) => {
         const clearPhone = phone.replace(/\D/g, '');
@@ -67,7 +53,6 @@ const OrderForm = () => {
         setIsShowErrMessage(prevState => ({...prevState, [e.target.name]: false}));
     }
 
-
     const handleInputChange = (e) => {
         const target = e.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -78,10 +63,13 @@ const OrderForm = () => {
         }));
     }
 
+    const isDisabledSendOrder = isEmptyObjProp(form) || isLoading || isSuccess;
 
     return (
         <div className="card" style={{maxWidth: "30rem", margin: " 0 auto"}}>
-            {}
+            {isError && !isLoading && (
+                <h4 className="text-danger">При оформлении заказа возникла ошибка! Попробуйте оформить ещё раз!</h4>
+            )}
             <form className="card-body" onSubmit={(e) => handleSubmitForm(e)}>
                 <div className="form-group">
                     <label htmlFor="phone">Телефон</label>
@@ -104,7 +92,9 @@ const OrderForm = () => {
                     <label className="form-check-label" htmlFor="agreement">Согласен с правилами
                         доставки</label>
                 </div>
-                <button type="submit" className="btn btn-outline-secondary">Оформить</button>
+                <button type="submit" className="btn btn-outline-secondary" disabled={isDisabledSendOrder}>Оформить
+                </button>
+                {isLoading && <Loader/>}
             </form>
         </div>
     );

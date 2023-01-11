@@ -33,9 +33,6 @@ export const productSlice = createSlice({
         decrementProductCount(state) {
             state.count = state.count - 1;
         },
-        clearCurrentProduct() {
-            return initialState;
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -52,5 +49,5 @@ export const productSlice = createSlice({
     }
 });
 
-export const {clearCurrentProduct, decrementProductCount, incrementProductCount, setProductSize} = productSlice.actions;
+export const {decrementProductCount, incrementProductCount, setProductSize} = productSlice.actions;
 export default productSlice.reducer
