@@ -15,6 +15,7 @@ const Header = () => {
 
     useEffect(() => {
         dispatch(getTotalCount());
+        // eslint-disable-next-line
     }, []);
 
     const handleClickShowSearch = () => {
